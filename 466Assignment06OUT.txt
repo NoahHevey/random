@@ -1,0 +1,210 @@
+mysql> CREATE TABLE instrument(
+    -> instrumentId integer primary key AUTO_INCREMENT,
+    -> instrumentType char(15),
+    -> makerName char(25),
+    -> year char(4));
+Query OK, 0 rows affected (0.08 sec)
+
+mysql> CREATE TABLE player(
+    -> playerId integer primary key AUTO_INCREMENT,
+    -> playerLast char(15),
+    -> salary decimal(7,2));
+Query OK, 0 rows affected (0.05 sec)
+
+mysql> CREATE TABLE plays(
+    -> instrumentId integer,
+    -> playerId integer,
+    -> rating char(4),
+    -> PRIMARY KEY (instrumentId, playerId),
+    -> FOREIGN KEY (instrumentId) REFERENCES instrument (instrumentId),
+    -> FOREIGN KEY (playerId) REFERENCES player (playerId));
+Query OK, 0 rows affected (0.10 sec)
+
+mysql> INSERT INTO instrument
+    -> values(1, 'Guitar', 'Gibson', '2000');
+Query OK, 1 row affected (0.03 sec)
+
+mysql> INSERT INTO instrument values(2, 'Drums', 'Pearl', '2010');
+Query OK, 1 row affected (0.12 sec)
+
+mysql> INSERT INTO instrument values(3, 'Bass', 'Fender', '1995');
+Query OK, 1 row affected (0.09 sec)
+
+mysql> INSERT INTO instrument values(4, 'Saxophone', 'Martin', '1990');
+Query OK, 1 row affected (0.04 sec)
+
+mysql> INSERT INTO instrument values(5, 'Flute', 'Jupiter', '1983');
+Query OK, 1 row affected (0.04 sec)
+
+mysql> INSERT INTO player values(1, 'Hevey', 45000.00);
+Query OK, 1 row affected (0.04 sec)
+
+mysql> INSERT INTO player values(2, 'Knoth', 52300.00);
+Query OK, 1 row affected (0.04 sec)
+
+mysql> INSERT INTO player values(3, 'Blank', 32000.00);
+Query OK, 1 row affected (0.05 sec)
+
+mysql> INSERT INTO player values(4, 'Jones', 51000.00);
+Query OK, 1 row affected (0.03 sec)
+
+mysql> INSERT INTO player values(5, 'Cash', 39000.00);
+Query OK, 1 row affected (0.03 sec)
+
+mysql> INSERT INTO plays values(1, 1, 'A');
+Query OK, 1 row affected (0.04 sec)
+
+mysql> INSERT INTO plays values(2, 2, 'A');
+Query OK, 1 row affected (0.03 sec)
+
+mysql> INSERT INTO plays values(3, 3, 'B');
+Query OK, 1 row affected (0.03 sec)
+
+mysql> INSERT INTO plays values(4, 4, 'C');
+Query OK, 1 row affected (0.04 sec)
+
+mysql> INSERT INTO plays values(5, 5, 'D');
+Query OK, 1 row affected (0.05 sec)
+
+mysql> SELECT * FROM instrument;
++--------------+----------------+-----------+------+
+| instrumentId | instrumentType | makerName | year |
++--------------+----------------+-----------+------+
+|            1 | Guitar         | Gibson    | 2000 |
+|            2 | Drums          | Pearl     | 2010 |
+|            3 | Bass           | Fender    | 1995 |
+|            4 | Saxophone      | Martin    | 1990 |
+|            5 | Flute          | Jupiter   | 1983 |
++--------------+----------------+-----------+------+
+5 rows in set (0.00 sec)
+
+mysql> SELECT * FROM player;
++----------+------------+----------+
+| playerId | playerLast | salary   |
++----------+------------+----------+
+|        1 | Hevey      | 45000.00 |
+|        2 | Knoth      | 52300.00 |
+|        3 | Blank      | 32000.00 |
+|        4 | Jones      | 51000.00 |
+|        5 | Cash       | 39000.00 |
++----------+------------+----------+
+5 rows in set (0.00 sec)
+
+mysql> SELECT * FROM plays;
++--------------+----------+--------+
+| instrumentId | playerId | rating |
++--------------+----------+--------+
+|            1 |        1 | A      |
+|            2 |        2 | A      |
+|            3 |        3 | B      |
+|            4 |        4 | C      |
+|            5 |        5 | D      |
++--------------+----------+--------+
+5 rows in set (0.00 sec)
+
+mysql> ALTER TABLE player ADD startDate char(4);
+Query OK, 5 rows affected (0.16 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> UPDATE player SET startDate = '2010';
+Query OK, 5 rows affected (0.07 sec)
+Rows matched: 5  Changed: 5  Warnings: 0
+
+mysql> SELECT * FROM player;
++----------+------------+----------+-----------+
+| playerId | playerLast | salary   | startDate |
++----------+------------+----------+-----------+
+|        1 | Hevey      | 45000.00 | 2010      |
+|        2 | Knoth      | 52300.00 | 2010      |
+|        3 | Blank      | 32000.00 | 2010      |
+|        4 | Jones      | 51000.00 | 2010      |
+|        5 | Cash       | 39000.00 | 2010      |
++----------+------------+----------+-----------+
+5 rows in set (0.00 sec)
+
+mysql> UPDATE player SET startDate = '2015' WHERE salary > 50000.00;
+Query OK, 2 rows affected (0.03 sec)
+Rows matched: 2  Changed: 2  Warnings: 0
+
+mysql> SELECT * FROM player;
++----------+------------+----------+-----------+
+| playerId | playerLast | salary   | startDate |
++----------+------------+----------+-----------+
+|        1 | Hevey      | 45000.00 | 2010      |
+|        2 | Knoth      | 52300.00 | 2015      |
+|        3 | Blank      | 32000.00 | 2010      |
+|        4 | Jones      | 51000.00 | 2015      |
+|        5 | Cash       | 39000.00 | 2010      |
++----------+------------+----------+-----------+
+5 rows in set (0.00 sec)
+
+mysql> DELETE FROM plays WHERE rating = 'D';
+Query OK, 1 row affected (0.03 sec)
+
+mysql> SELECT * FROM instrument;
++--------------+----------------+-----------+------+
+| instrumentId | instrumentType | makerName | year |
++--------------+----------------+-----------+------+
+|            1 | Guitar         | Gibson    | 2000 |
+|            2 | Drums          | Pearl     | 2010 |
+|            3 | Bass           | Fender    | 1995 |
+|            4 | Saxophone      | Martin    | 1990 |
+|            5 | Flute          | Jupiter   | 1983 |
++--------------+----------------+-----------+------+
+5 rows in set (0.00 sec)
+
+mysql> SELECT * FROM player;
++----------+------------+----------+-----------+
+| playerId | playerLast | salary   | startDate |
++----------+------------+----------+-----------+
+|        1 | Hevey      | 45000.00 | 2010      |
+|        2 | Knoth      | 52300.00 | 2015      |
+|        3 | Blank      | 32000.00 | 2010      |
+|        4 | Jones      | 51000.00 | 2015      |
+|        5 | Cash       | 39000.00 | 2010      |
++----------+------------+----------+-----------+
+5 rows in set (0.01 sec)
+
+mysql> SELECT * FROM plays;
++--------------+----------+--------+
+| instrumentId | playerId | rating |
++--------------+----------+--------+
+|            1 |        1 | A      |
+|            2 |        2 | A      |
+|            3 |        3 | B      |
+|            4 |        4 | C      |
++--------------+----------+--------+
+4 rows in set (0.00 sec)
+
+mysql> describe instrument;
++----------------+----------+------+-----+---------+----------------+
+| Field          | Type     | Null | Key | Default | Extra          |
++----------------+----------+------+-----+---------+----------------+
+| instrumentId   | int(11)  | NO   | PRI | NULL    | auto_increment |
+| instrumentType | char(15) | YES  |     | NULL    |                |
+| makerName      | char(25) | YES  |     | NULL    |                |
+| year           | char(4)  | YES  |     | NULL    |                |
++----------------+----------+------+-----+---------+----------------+
+4 rows in set (0.00 sec)
+
+mysql> describe player;
++------------+--------------+------+-----+---------+----------------+
+| Field      | Type         | Null | Key | Default | Extra          |
++------------+--------------+------+-----+---------+----------------+
+| playerId   | int(11)      | NO   | PRI | NULL    | auto_increment |
+| playerLast | char(15)     | YES  |     | NULL    |                |
+| salary     | decimal(7,2) | YES  |     | NULL    |                |
+| startDate  | char(4)      | YES  |     | NULL    |                |
++------------+--------------+------+-----+---------+----------------+
+4 rows in set (0.01 sec)
+
+mysql> describe plays;
++--------------+---------+------+-----+---------+-------+
+| Field        | Type    | Null | Key | Default | Extra |
++--------------+---------+------+-----+---------+-------+
+| instrumentId | int(11) | NO   | PRI | 0       |       |
+| playerId     | int(11) | NO   | PRI | 0       |       |
+| rating       | char(4) | YES  |     | NULL    |       |
++--------------+---------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
