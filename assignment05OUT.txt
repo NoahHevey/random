@@ -1,0 +1,433 @@
+mysql> SELECT AuthorFirst, AuthorLast FROM Author ORDER BY AuthorFirst ASC;
++-------------+--------------+
+| AuthorFirst | AuthorLast   |
++-------------+--------------+
+| Albert      | Camus        |
+| Barbara     | Owen         |
+| Bradley     | Collins, Jr. |
+| Bradley     | Collins      |
+| Dick        | Francis      |
+| Douglas R.  | Hofstadter   |
+| Gary        | Wills        |
+| Harper      | Lee          |
+| J.D.        | Salinger     |
+| J.K.        | Rowling      |
+| John        | Steinbeck    |
+| Joseph      | Heller       |
+| Lon         | Schleining   |
+| Paul        | Solotaroff   |
+| Peter       | Straub       |
+| Philip      | Pratt        |
+| Randy       | O'Rourke     |
+| Riva        | Castelman    |
+| Seamus      | Heaney       |
+| Stephen     | King         |
+| Stephen E.  | Ambrose      |
+| Toni        | Morrison     |
+| Tracy       | Kidder       |
+| Truddi      | Chase        |
+| Vernor      | Vintage      |
++-------------+--------------+
+25 rows in set (0.00 sec)
+
+mysql> SELECT DISTINCT City FROM Publisher;
++--------------+
+| City         |
++--------------+
+| Sauk City WI |
+| New York     |
+| Boulder CO   |
+| Boston       |
+| Los Angeles  |
+| Kingston     |
+| Newtown CT   |
+| Westport CT  |
++--------------+
+8 rows in set (0.00 sec)
+
+mysql> SELECT COUNT(Title) FROM Book;
++--------------+
+| COUNT(Title) |
++--------------+
+|           33 |
++--------------+
+1 row in set (0.00 sec)
+
+mysql> SELECT BranchName, SUM(OnHand) FROM Branch, Inventory WHERE Branch.BranchNum = Inventory.BranchNum GROUP BY BranchName;
++-------------------+-------------+
+| BranchName        | SUM(OnHand) |
++-------------------+-------------+
+| Henry Brentwood   |          29 |
+| Henry Downtown    |          22 |
+| Henry Eastshore   |          17 |
+| Henry On The Hill |          31 |
++-------------------+-------------+
+4 rows in set (0.00 sec)
+
+mysql> SELECT SUM(NumEmployees) FROM Branch;
++-------------------+
+| SUM(NumEmployees) |
++-------------------+
+|                40 |
++-------------------+
+1 row in set (0.00 sec)
+
+mysql> show tables;
++----------------------+
+| Tables_in_henrybooks |
++----------------------+
+| Author               |
+| Book                 |
+| Branch               |
+| Inventory            |
+| Publisher            |
+| Wrote                |
++----------------------+
+6 rows in set (0.00 sec)
+
+mysql> SELECT Title FROM Book, Author WHERE AuthorFirst = 'Stephen' AND AuthorLast = 'King' AND Author.AuthorNum = Wrote.AuthorNum AND Book.BookCode = Wrote.BookCode;
+ERROR 1054 (42S22): Unknown column 'Wrote.AuthorNum' in 'where clause'
+mysql> SELECT Title FROM Book, Author, Wrote WHERE AuthorFirst = 'Stephen' AND AuthorLast = 'King' AND Author.AuthorNum = Wrote.AuthorNum AND Book.BookCode = Wrote.BookCode;
++-----------------------+
+| Title                 |
++-----------------------+
+| Dreamcatcher: A Novel |
+| Black House           |
++-----------------------+
+2 rows in set (0.00 sec)
+
+mysql> SELECT Title, Type, Price FROM Book WHERE Paperback = 'Y';
++---------------------------------------+------+-------+
+| Title                                 | Type | Price |
++---------------------------------------+------+-------+
+| A Deepness in the Sky                 | SFI  |  7.19 |
+| Magic Terror                          | HOR  |  7.99 |
+| The Stranger                          | FIC  |  8.00 |
+| The Edge                              | MYS  |  6.99 |
+| Beloved                               | FIC  | 12.95 |
+| Of Mice and Men                       | FIC  |  6.95 |
+| Group: Six People in Search of a Life | PSY  | 10.40 |
+| Nine Stories                          | FIC  |  5.99 |
+| The Soul of a New Machine             | SCI  | 11.16 |
+| Travels with Charley                  | TRA  |  7.95 |
+| Catch-22                              | FIC  | 12.00 |
+| Jazz                                  | FIC  | 12.95 |
+| Band of Brothers                      | HIS  |  9.60 |
+| A Guide to SQL                        | CMP  | 37.95 |
+| Franny and Zooey                      | FIC  |  5.99 |
+| East of Eden                          | FIC  | 12.95 |
+| The Fall                              | FIC  |  8.00 |
+| Godel, Escher, Bach                   | PHI  | 14.00 |
+| When Rabbit Howls                     | PSY  |  6.29 |
+| Song of Solomon                       | FIC  | 14.00 |
+| The Grapes of Wrath                   | FIC  | 13.00 |
+| Slay Ride                             | MYS  |  6.99 |
+| The Catcher in the Rye                | FIC  |  5.99 |
++---------------------------------------+------+-------+
+23 rows in set (0.00 sec)
+
+mysql> SELECT BranchName FROM Branch WHERE BranchNum IN (SELECT BranchNum FROM Inventory WHERE OnHand > 10)
+    -> ;
+Empty set (0.00 sec)
+
+mysql> SELECT Title, AuthorFirst, AuthorLast FROM Book, Author, Wrote WHERE Book.BookCode = Wrote.BookCode AND Author.AuthorNum = Wrote.AuthorNum ORDER BY Title DESC;
++------------------------------------------+-------------+--------------+
+| Title                                    | AuthorFirst | AuthorLast   |
++------------------------------------------+-------------+--------------+
+| When Rabbit Howls                        | Truddi      | Chase        |
+| Venice                                   | Gary        | Wills        |
+| Van Gogh and Gauguin                     | Bradley     | Collins      |
+| Van Gogh and Gauguin                     | Bradley     | Collins, Jr. |
+| Treasure Chests                          | Randy       | O'Rourke     |
+| Treasure Chests                          | Lon         | Schleining   |
+| Travels with Charley                     | John        | Steinbeck    |
+| To Kill a Mockingbird                    | Harper      | Lee          |
+| The Stranger                             | Albert      | Camus        |
+| The Soul of a New Machine                | Tracy       | Kidder       |
+| The Grapes of Wrath                      | John        | Steinbeck    |
+| The Fall                                 | Albert      | Camus        |
+| The Edge                                 | Dick        | Francis      |
+| The Catcher in the Rye                   | J.D.        | Salinger     |
+| Song of Solomon                          | Toni        | Morrison     |
+| Slay Ride                                | Dick        | Francis      |
+| Second Wind                              | Dick        | Francis      |
+| Of Mice and Men                          | John        | Steinbeck    |
+| Nine Stories                             | J.D.        | Salinger     |
+| Magic Terror                             | Peter       | Straub       |
+| Jazz                                     | Toni        | Morrison     |
+| Harry Potter and the Prisoner of Azkaban | J.K.        | Rowling      |
+| Harry Potter and the Goblet of Fire      | J.K.        | Rowling      |
+| Group: Six People in Search of a Life    | Paul        | Solotaroff   |
+| Godel, Escher, Bach                      | Douglas R.  | Hofstadter   |
+| Franny and Zooey                         | J.D.        | Salinger     |
+| Electric Light                           | Seamus      | Heaney       |
+| East of Eden                             | John        | Steinbeck    |
+| Dreamcatcher: A Novel                    | Stephen     | King         |
+| Catch-22                                 | Joseph      | Heller       |
+| Black House                              | Peter       | Straub       |
+| Black House                              | Stephen     | King         |
+| Beloved                                  | Toni        | Morrison     |
+| Band of Brothers                         | Stephen E.  | Ambrose      |
+| A Guide to SQL                           | Philip      | Pratt        |
+| A Deepness in the Sky                    | Vernor      | Vintage      |
++------------------------------------------+-------------+--------------+
+36 rows in set (0.00 sec)
+
+mysql> SELECT PublisherName, COUNT(Title) FROM Publisher, Book WHERE Publisher.PublisherCode = Book.PublisherCode GROUP BY PublisherName;
++--------------------------+--------------+
+| PublisherName            | COUNT(Title) |
++--------------------------+--------------+
+| Back Bay Books           |            1 |
+| Basic Books              |            1 |
+| Berkley Publishing       |            1 |
+| Course Technology        |            1 |
+| Farrar Straus and Giroux |            1 |
+| Fawcett Books            |            1 |
+| HarperCollins Publishers |            1 |
+| Jove Publications        |            3 |
+| Lb Books                 |            3 |
+| Penguin USA              |            4 |
+| Plume                    |            3 |
+| Putnam Publishing Group  |            1 |
+| Random House             |            1 |
+| Scholastic Trade         |            2 |
+| Scribner                 |            2 |
+| Simon and Schuster       |            1 |
+| Taunton Press            |            1 |
+| Tor Books                |            1 |
+| Touchstone Books         |            1 |
+| Vintage Books            |            2 |
+| Westview Press           |            1 |
++--------------------------+--------------+
+21 rows in set (0.00 sec)
+
+mysql> SELECT COUNT(BookCode) FROM Book WHERE Price < 10.00;
++-----------------+
+| COUNT(BookCode) |
++-----------------+
+|              13 |
++-----------------+
+1 row in set (0.00 sec)
+
+mysql> SELECT AuthorLast FROM Author WHERE AuthorNum IN (SELECT AuthorNum FROM Wrote WHERE BookCode IN (SELECT BookCode FROM Book WHERE PublisherCode IN (SELECT PublisherCode FROM Publisher WHERE PublisherName = 'Simon and Schuster')));
++------------+
+| AuthorLast |
++------------+
+| Wills      |
++------------+
+1 row in set (0.00 sec)
+
+mysql> SELECT Type, SUM(OnHand) FROM Book, Inventory WHERE Book.BookCode = Inventory.BookCode GROUP BY Type;
++------+-------------+
+| Type | SUM(OnHand) |
++------+-------------+
+| ART  |           6 |
+| CMP  |           1 |
+| FIC  |          47 |
+| HIS  |           2 |
+| HOR  |          10 |
+| MYS  |          10 |
+| PHI  |           1 |
+| POE  |           4 |
+| PSY  |           5 |
+| SCI  |           3 |
+| SFI  |           9 |
+| TRA  |           1 |
++------+-------------+
+12 rows in set (0.00 sec)
+
+mysql> SELECT BranchLocation, SUM(OnHand) FROM Branch, Inventory WHERE BranchLocation = 'Brentwood Mall' AND BranchNum = Inventory.BranchNum;
+ERROR 1052 (23000): Column 'BranchNum' in where clause is ambiguous
+mysql> SELECT BranchLocation, SUM(OnHand) FROM Branch, Inventory WHERE BranchLocation = 'Brentwood Mall' AND Branch.BranchNum = Inventory.BranchNum;
++----------------+-------------+
+| BranchLocation | SUM(OnHand) |
++----------------+-------------+
+| Brentwood Mall |          29 |
++----------------+-------------+
+1 row in set (0.00 sec)
+
+mysql> SELECT BranchLocation, NumEmployees, SUM(OnHand) FROM Branch, Inventory WHERE Branch.BranchNum = Inventory.BranchNum GROUP BY BranchLocation;
++----------------+--------------+-------------+
+| BranchLocation | NumEmployees | SUM(OnHand) |
++----------------+--------------+-------------+
+| 1289 Bedford   |            6 |          31 |
+| 16 Riverview   |           10 |          22 |
+| Brentwood Mall |           15 |          29 |
+| Eastshore Mall |            9 |          17 |
++----------------+--------------+-------------+
+4 rows in set (0.00 sec)
+
+mysql> SELECT Title FROM Book WHERE BookCode IN (SELECT BookCode FROM Wrote WHERE Sequence = '1');
++------------------------------------------+
+| Title                                    |
++------------------------------------------+
+| A Deepness in the Sky                    |
+| Magic Terror                             |
+| The Stranger                             |
+| Venice                                   |
+| Second Wind                              |
+| The Edge                                 |
+| Dreamcatcher: A Novel                    |
+| Treasure Chests                          |
+| Beloved                                  |
+| Harry Potter and the Prisoner of Azkaban |
+| Van Gogh and Gauguin                     |
+| Of Mice and Men                          |
+| Electric Light                           |
+| Group: Six People in Search of a Life    |
+| Nine Stories                             |
+| The Soul of a New Machine                |
+| Travels with Charley                     |
+| Catch-22                                 |
+| Jazz                                     |
+| Band of Brothers                         |
+| A Guide to SQL                           |
+| Franny and Zooey                         |
+| East of Eden                             |
+| Harry Potter and the Goblet of Fire      |
+| The Fall                                 |
+| Godel, Escher, Bach                      |
+| When Rabbit Howls                        |
+| Black House                              |
+| Song of Solomon                          |
+| The Grapes of Wrath                      |
+| Slay Ride                                |
+| The Catcher in the Rye                   |
+| To Kill a Mockingbird                    |
++------------------------------------------+
+33 rows in set (0.00 sec)
+
+mysql> SELECT * FROM Publisher WHERE PublisherName LIKE 'T%';
++---------------+-------------------+-------------+
+| PublisherCode | PublisherName     | City        |
++---------------+-------------------+-------------+
+| TA            | Taunton Press     | Newtown CT  |
+| TB            | Tor Books         | New York    |
+| TH            | Thames and Hudson | New York    |
+| TO            | Touchstone Books  | Westport CT |
++---------------+-------------------+-------------+
+4 rows in set (0.00 sec)
+
+mysql> SELECT * FROM Author WHERE CONCAT(AuthorFirst, AuthorLast) LIKE '%ll%';
++-----------+--------------+-------------+
+| AuthorNum | AuthorLast   | AuthorFirst |
++-----------+--------------+-------------+
+|         9 | Collins      | Bradley     |
+|        10 | Heller       | Joseph      |
+|        11 | Wills        | Gary        |
+|        19 | Collins, Jr. | Bradley     |
++-----------+--------------+-------------+
+4 rows in set (0.00 sec)
+
+mysql> SELECT Title FROM Book WHERE BookCode IN ('079x', '138x', '669x');
++----------------+
+| Title          |
++----------------+
+| Second Wind    |
+| Beloved        |
+| A Guide to SQL |
++----------------+
+3 rows in set (0.00 sec)
+
+mysql> SELECT AuthorLast, Title, PublisherName FROM Author, Book, Publisher, Wrote WHERE Book.BookCode = Wrote.BookCode AND Author.AuthorNum = Wrote.AuthorNum AND Book.PublisherCode = Publisher.PublisherCode ORDER BY PublisherName ASC;
++--------------+------------------------------------------+--------------------------+
+| AuthorLast   | Title                                    | PublisherName            |
++--------------+------------------------------------------+--------------------------+
+| Kidder       | The Soul of a New Machine                | Back Bay Books           |
+| Hofstadter   | Godel, Escher, Bach                      | Basic Books              |
+| Solotaroff   | Group: Six People in Search of a Life    | Berkley Publishing       |
+| Pratt        | A Guide to SQL                           | Course Technology        |
+| Heaney       | Electric Light                           | Farrar Straus and Giroux |
+| Straub       | Magic Terror                             | Fawcett Books            |
+| Lee          | To Kill a Mockingbird                    | HarperCollins Publishers |
+| Chase        | When Rabbit Howls                        | Jove Publications        |
+| Francis      | Slay Ride                                | Jove Publications        |
+| Francis      | The Edge                                 | Jove Publications        |
+| Salinger     | The Catcher in the Rye                   | Lb Books                 |
+| Salinger     | Nine Stories                             | Lb Books                 |
+| Salinger     | Franny and Zooey                         | Lb Books                 |
+| Steinbeck    | Travels with Charley                     | Penguin USA              |
+| Steinbeck    | The Grapes of Wrath                      | Penguin USA              |
+| Steinbeck    | Of Mice and Men                          | Penguin USA              |
+| Steinbeck    | East of Eden                             | Penguin USA              |
+| Morrison     | Song of Solomon                          | Plume                    |
+| Morrison     | Beloved                                  | Plume                    |
+| Morrison     | Jazz                                     | Plume                    |
+| Francis      | Second Wind                              | Putnam Publishing Group  |
+| Straub       | Black House                              | Random House             |
+| King         | Black House                              | Random House             |
+| Rowling      | Harry Potter and the Goblet of Fire      | Scholastic Trade         |
+| Rowling      | Harry Potter and the Prisoner of Azkaban | Scholastic Trade         |
+| King         | Dreamcatcher: A Novel                    | Scribner                 |
+| Heller       | Catch-22                                 | Scribner                 |
+| Wills        | Venice                                   | Simon and Schuster       |
+| O'Rourke     | Treasure Chests                          | Taunton Press            |
+| Schleining   | Treasure Chests                          | Taunton Press            |
+| Vintage      | A Deepness in the Sky                    | Tor Books                |
+| Ambrose      | Band of Brothers                         | Touchstone Books         |
+| Camus        | The Stranger                             | Vintage Books            |
+| Camus        | The Fall                                 | Vintage Books            |
+| Collins, Jr. | Van Gogh and Gauguin                     | Westview Press           |
+| Collins      | Van Gogh and Gauguin                     | Westview Press           |
++--------------+------------------------------------------+--------------------------+
+36 rows in set (0.00 sec)
+
+mysql> SELECT Title FROM Book WHERE BookCode = '079x' OR BookCode = '138x' OR BookCode = '669x';
++----------------+
+| Title          |
++----------------+
+| Second Wind    |
+| Beloved        |
+| A Guide to SQL |
++----------------+
+3 rows in set (0.00 sec)
+
+mysql> SELECT Title FROM Book, Wrote WHERE Sequence = '1' AND Book.BookCode = Wrote.BookCode;
++------------------------------------------+
+| Title                                    |
++------------------------------------------+
+| A Deepness in the Sky                    |
+| Magic Terror                             |
+| The Stranger                             |
+| Venice                                   |
+| Second Wind                              |
+| The Edge                                 |
+| Dreamcatcher: A Novel                    |
+| Treasure Chests                          |
+| Beloved                                  |
+| Harry Potter and the Prisoner of Azkaban |
+| Van Gogh and Gauguin                     |
+| Of Mice and Men                          |
+| Electric Light                           |
+| Group: Six People in Search of a Life    |
+| Nine Stories                             |
+| The Soul of a New Machine                |
+| Travels with Charley                     |
+| Catch-22                                 |
+| Jazz                                     |
+| Band of Brothers                         |
+| A Guide to SQL                           |
+| Franny and Zooey                         |
+| East of Eden                             |
+| Harry Potter and the Goblet of Fire      |
+| The Fall                                 |
+| Godel, Escher, Bach                      |
+| When Rabbit Howls                        |
+| Black House                              |
+| Song of Solomon                          |
+| The Grapes of Wrath                      |
+| Slay Ride                                |
+| The Catcher in the Rye                   |
+| To Kill a Mockingbird                    |
++------------------------------------------+
+33 rows in set (0.00 sec)
+
+mysql> SELECT AVG(Price) FROM Book;
++------------+
+| AVG(Price) |
++------------+
+|  13.415758 |
++------------+
+1 row in set (0.00 sec)
+
+mysql> \t
