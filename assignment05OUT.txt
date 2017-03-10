@@ -1,3 +1,8 @@
+# Noah Hevey
+# z1799146
+# CSCI 466
+
+#1
 mysql> SELECT AuthorFirst, AuthorLast FROM Author ORDER BY AuthorFirst ASC;
 +-------------+--------------+
 | AuthorFirst | AuthorLast   |
@@ -30,6 +35,7 @@ mysql> SELECT AuthorFirst, AuthorLast FROM Author ORDER BY AuthorFirst ASC;
 +-------------+--------------+
 25 rows in set (0.00 sec)
 
+#2
 mysql> SELECT DISTINCT City FROM Publisher;
 +--------------+
 | City         |
@@ -45,6 +51,7 @@ mysql> SELECT DISTINCT City FROM Publisher;
 +--------------+
 8 rows in set (0.00 sec)
 
+#3
 mysql> SELECT COUNT(Title) FROM Book;
 +--------------+
 | COUNT(Title) |
@@ -53,6 +60,7 @@ mysql> SELECT COUNT(Title) FROM Book;
 +--------------+
 1 row in set (0.00 sec)
 
+#4
 mysql> SELECT BranchName, SUM(OnHand) FROM Branch, Inventory WHERE Branch.BranchNum = Inventory.BranchNum GROUP BY BranchName;
 +-------------------+-------------+
 | BranchName        | SUM(OnHand) |
@@ -64,6 +72,7 @@ mysql> SELECT BranchName, SUM(OnHand) FROM Branch, Inventory WHERE Branch.Branch
 +-------------------+-------------+
 4 rows in set (0.00 sec)
 
+#5
 mysql> SELECT SUM(NumEmployees) FROM Branch;
 +-------------------+
 | SUM(NumEmployees) |
@@ -72,21 +81,7 @@ mysql> SELECT SUM(NumEmployees) FROM Branch;
 +-------------------+
 1 row in set (0.00 sec)
 
-mysql> show tables;
-+----------------------+
-| Tables_in_henrybooks |
-+----------------------+
-| Author               |
-| Book                 |
-| Branch               |
-| Inventory            |
-| Publisher            |
-| Wrote                |
-+----------------------+
-6 rows in set (0.00 sec)
-
-mysql> SELECT Title FROM Book, Author WHERE AuthorFirst = 'Stephen' AND AuthorLast = 'King' AND Author.AuthorNum = Wrote.AuthorNum AND Book.BookCode = Wrote.BookCode;
-ERROR 1054 (42S22): Unknown column 'Wrote.AuthorNum' in 'where clause'
+#6
 mysql> SELECT Title FROM Book, Author, Wrote WHERE AuthorFirst = 'Stephen' AND AuthorLast = 'King' AND Author.AuthorNum = Wrote.AuthorNum AND Book.BookCode = Wrote.BookCode;
 +-----------------------+
 | Title                 |
@@ -96,6 +91,7 @@ mysql> SELECT Title FROM Book, Author, Wrote WHERE AuthorFirst = 'Stephen' AND A
 +-----------------------+
 2 rows in set (0.00 sec)
 
+#7
 mysql> SELECT Title, Type, Price FROM Book WHERE Paperback = 'Y';
 +---------------------------------------+------+-------+
 | Title                                 | Type | Price |
@@ -126,10 +122,12 @@ mysql> SELECT Title, Type, Price FROM Book WHERE Paperback = 'Y';
 +---------------------------------------+------+-------+
 23 rows in set (0.00 sec)
 
+#8
 mysql> SELECT BranchName FROM Branch WHERE BranchNum IN (SELECT BranchNum FROM Inventory WHERE OnHand > 10)
     -> ;
 Empty set (0.00 sec)
 
+#9
 mysql> SELECT Title, AuthorFirst, AuthorLast FROM Book, Author, Wrote WHERE Book.BookCode = Wrote.BookCode AND Author.AuthorNum = Wrote.AuthorNum ORDER BY Title DESC;
 +------------------------------------------+-------------+--------------+
 | Title                                    | AuthorFirst | AuthorLast   |
@@ -173,6 +171,7 @@ mysql> SELECT Title, AuthorFirst, AuthorLast FROM Book, Author, Wrote WHERE Book
 +------------------------------------------+-------------+--------------+
 36 rows in set (0.00 sec)
 
+#10
 mysql> SELECT PublisherName, COUNT(Title) FROM Publisher, Book WHERE Publisher.PublisherCode = Book.PublisherCode GROUP BY PublisherName;
 +--------------------------+--------------+
 | PublisherName            | COUNT(Title) |
@@ -201,6 +200,7 @@ mysql> SELECT PublisherName, COUNT(Title) FROM Publisher, Book WHERE Publisher.P
 +--------------------------+--------------+
 21 rows in set (0.00 sec)
 
+#11
 mysql> SELECT COUNT(BookCode) FROM Book WHERE Price < 10.00;
 +-----------------+
 | COUNT(BookCode) |
@@ -209,6 +209,7 @@ mysql> SELECT COUNT(BookCode) FROM Book WHERE Price < 10.00;
 +-----------------+
 1 row in set (0.00 sec)
 
+#12
 mysql> SELECT AuthorLast FROM Author WHERE AuthorNum IN (SELECT AuthorNum FROM Wrote WHERE BookCode IN (SELECT BookCode FROM Book WHERE PublisherCode IN (SELECT PublisherCode FROM Publisher WHERE PublisherName = 'Simon and Schuster')));
 +------------+
 | AuthorLast |
@@ -217,6 +218,7 @@ mysql> SELECT AuthorLast FROM Author WHERE AuthorNum IN (SELECT AuthorNum FROM W
 +------------+
 1 row in set (0.00 sec)
 
+#13
 mysql> SELECT Type, SUM(OnHand) FROM Book, Inventory WHERE Book.BookCode = Inventory.BookCode GROUP BY Type;
 +------+-------------+
 | Type | SUM(OnHand) |
@@ -236,8 +238,7 @@ mysql> SELECT Type, SUM(OnHand) FROM Book, Inventory WHERE Book.BookCode = Inven
 +------+-------------+
 12 rows in set (0.00 sec)
 
-mysql> SELECT BranchLocation, SUM(OnHand) FROM Branch, Inventory WHERE BranchLocation = 'Brentwood Mall' AND BranchNum = Inventory.BranchNum;
-ERROR 1052 (23000): Column 'BranchNum' in where clause is ambiguous
+#14
 mysql> SELECT BranchLocation, SUM(OnHand) FROM Branch, Inventory WHERE BranchLocation = 'Brentwood Mall' AND Branch.BranchNum = Inventory.BranchNum;
 +----------------+-------------+
 | BranchLocation | SUM(OnHand) |
@@ -246,6 +247,7 @@ mysql> SELECT BranchLocation, SUM(OnHand) FROM Branch, Inventory WHERE BranchLoc
 +----------------+-------------+
 1 row in set (0.00 sec)
 
+#15
 mysql> SELECT BranchLocation, NumEmployees, SUM(OnHand) FROM Branch, Inventory WHERE Branch.BranchNum = Inventory.BranchNum GROUP BY BranchLocation;
 +----------------+--------------+-------------+
 | BranchLocation | NumEmployees | SUM(OnHand) |
@@ -257,6 +259,7 @@ mysql> SELECT BranchLocation, NumEmployees, SUM(OnHand) FROM Branch, Inventory W
 +----------------+--------------+-------------+
 4 rows in set (0.00 sec)
 
+#16
 mysql> SELECT Title FROM Book WHERE BookCode IN (SELECT BookCode FROM Wrote WHERE Sequence = '1');
 +------------------------------------------+
 | Title                                    |
@@ -297,6 +300,7 @@ mysql> SELECT Title FROM Book WHERE BookCode IN (SELECT BookCode FROM Wrote WHER
 +------------------------------------------+
 33 rows in set (0.00 sec)
 
+#17
 mysql> SELECT * FROM Publisher WHERE PublisherName LIKE 'T%';
 +---------------+-------------------+-------------+
 | PublisherCode | PublisherName     | City        |
@@ -308,6 +312,7 @@ mysql> SELECT * FROM Publisher WHERE PublisherName LIKE 'T%';
 +---------------+-------------------+-------------+
 4 rows in set (0.00 sec)
 
+#18
 mysql> SELECT * FROM Author WHERE CONCAT(AuthorFirst, AuthorLast) LIKE '%ll%';
 +-----------+--------------+-------------+
 | AuthorNum | AuthorLast   | AuthorFirst |
@@ -319,6 +324,7 @@ mysql> SELECT * FROM Author WHERE CONCAT(AuthorFirst, AuthorLast) LIKE '%ll%';
 +-----------+--------------+-------------+
 4 rows in set (0.00 sec)
 
+#19
 mysql> SELECT Title FROM Book WHERE BookCode IN ('079x', '138x', '669x');
 +----------------+
 | Title          |
@@ -329,6 +335,7 @@ mysql> SELECT Title FROM Book WHERE BookCode IN ('079x', '138x', '669x');
 +----------------+
 3 rows in set (0.00 sec)
 
+#20
 mysql> SELECT AuthorLast, Title, PublisherName FROM Author, Book, Publisher, Wrote WHERE Book.BookCode = Wrote.BookCode AND Author.AuthorNum = Wrote.AuthorNum AND Book.PublisherCode = Publisher.PublisherCode ORDER BY PublisherName ASC;
 +--------------+------------------------------------------+--------------------------+
 | AuthorLast   | Title                                    | PublisherName            |
@@ -372,6 +379,7 @@ mysql> SELECT AuthorLast, Title, PublisherName FROM Author, Book, Publisher, Wro
 +--------------+------------------------------------------+--------------------------+
 36 rows in set (0.00 sec)
 
+#21 19 redone
 mysql> SELECT Title FROM Book WHERE BookCode = '079x' OR BookCode = '138x' OR BookCode = '669x';
 +----------------+
 | Title          |
@@ -382,6 +390,7 @@ mysql> SELECT Title FROM Book WHERE BookCode = '079x' OR BookCode = '138x' OR Bo
 +----------------+
 3 rows in set (0.00 sec)
 
+#21 16 redone
 mysql> SELECT Title FROM Book, Wrote WHERE Sequence = '1' AND Book.BookCode = Wrote.BookCode;
 +------------------------------------------+
 | Title                                    |
@@ -422,6 +431,7 @@ mysql> SELECT Title FROM Book, Wrote WHERE Sequence = '1' AND Book.BookCode = Wr
 +------------------------------------------+
 33 rows in set (0.00 sec)
 
+#22 What is the average cost of all books?
 mysql> SELECT AVG(Price) FROM Book;
 +------------+
 | AVG(Price) |
