@@ -1,3 +1,8 @@
+# Noah Hevey
+# z1799146
+# CSCI 466
+
+#1 a
 mysql> CREATE TABLE instrument(
     -> instrumentId integer primary key AUTO_INCREMENT,
     -> instrumentType char(15),
@@ -5,12 +10,14 @@ mysql> CREATE TABLE instrument(
     -> year char(4));
 Query OK, 0 rows affected (0.08 sec)
 
+#1 b
 mysql> CREATE TABLE player(
     -> playerId integer primary key AUTO_INCREMENT,
     -> playerLast char(15),
     -> salary decimal(7,2));
 Query OK, 0 rows affected (0.05 sec)
 
+#1 c
 mysql> CREATE TABLE plays(
     -> instrumentId integer,
     -> playerId integer,
@@ -19,6 +26,7 @@ mysql> CREATE TABLE plays(
     -> FOREIGN KEY (instrumentId) REFERENCES instrument (instrumentId),
     -> FOREIGN KEY (playerId) REFERENCES player (playerId));
 Query OK, 0 rows affected (0.10 sec)
+
 
 mysql> INSERT INTO instrument
     -> values(1, 'Guitar', 'Gibson', '2000');
