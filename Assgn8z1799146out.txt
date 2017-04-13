@@ -1,0 +1,177 @@
+mysql> use z1799146;
+Database changed
+mysql> create table assign8(
+    -> pk int primary key,
+    -> data char(15));
+Query OK, 0 rows affected (0.05 sec)
+
+mysql> start transaction;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> insert into assign8
+    -> values(100, 'data100');
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into assign8
+    -> values(101, 'data101');
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into assign8
+    -> values(102, 'data102');
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into assign8
+    -> values(103, 'data103');
+Query OK, 1 row affected (0.00 sec)
+
+mysql> use z1799146;
+Database changed
+mysql> select * from assign8;
+Empty set (0.00 sec)
+
+## 2 result is empty set because session 2 cannot see the changes made on session 1 until they are committed.
+## 
+
+mysql> insert into assign8
+    -> values (104, 'data104');
+Query OK, 1 row affected (0.03 sec)
+
+mysql> insert into assign8
+    -> values(105, 'data105');
+Query OK, 1 row affected (0.03 sec)
+
+mysql> commit;
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> select * from assign8;
++-----+---------+
+| pk  | data    |
++-----+---------+
+| 100 | data100 |
+| 101 | data101 |
+| 102 | data102 |
+| 103 | data103 |
+| 104 | data104 |
+| 105 | data105 |
++-----+---------+
+6 rows in set (0.00 sec)
+
+mysql> \t
+mysql> select * from assign8;
++-----+---------+
+| pk  | data    |
++-----+---------+
+| 100 | data100 |
+| 101 | data101 |
+| 102 | data102 |
+| 103 | data103 |
+| 104 | data104 |
+| 105 | data105 |
++-----+---------+
+6 rows in set (0.00 sec)
+
+mysql> \t
+
+##5. the full table is displayed because changes from session 1 have been committed.
+##
+
+mysql> use z1799146
+Database changed
+mysql> start transaction
+    -> ;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> delete from assign8 where pk = 103;
+Query OK, 1 row affected (0.00 sec)
+
+mysql> select * from assign8;
++-----+---------+
+| pk  | data    |
++-----+---------+
+| 100 | data100 |
+| 101 | data101 |
+| 102 | data102 |
+| 104 | data104 |
+| 105 | data105 |
++-----+---------+
+5 rows in set (0.00 sec)
+
+mysql> update assign8 set data = 'changed' where pk = 100;
+Query OK, 1 row affected (0.00 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> update assign8 set data = 'changed also' where pk = 104;
+Query OK, 1 row affected (0.00 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> insert into assign8 values(203, 'data203');
+Query OK, 1 row affected (0.00 sec)
+
+mysql> select * from assign8;
++-----+--------------+
+| pk  | data         |
++-----+--------------+
+| 100 | changed      |
+| 101 | data101      |
+| 102 | data102      |
+| 104 | changed also |
+| 105 | data105      |
+| 203 | data203      |
++-----+--------------+
+6 rows in set (0.00 sec)
+
+##4. changes are displayed in the session that they are made even before a commit
+##
+
+mysql> rollback;
+Query OK, 0 rows affected (0.08 sec)
+
+mysql> select * from assign8;
++-----+---------+
+| pk  | data    |
++-----+---------+
+| 100 | data100 |
+| 101 | data101 |
+| 102 | data102 |
+| 103 | data103 |
+| 104 | data104 |
+| 105 | data105 |
++-----+---------+
+6 rows in set (0.00 sec)
+
+##5. rollback returns data to the state it was in before the transaction started.
+##
+
+mysql> \t
+mysql> use z1799146
+Database changed
+mysql> start transaction;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> use z1799146
+Database changed
+mysql> start transaction;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> update assign8
+    -> set data = 'session1'
+    -> where pk = 101;
+Query OK, 1 row affected (0.00 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> update assign8
+    -> set data = 'session2'
+    -> where pk = 102;
+Query OK, 1 row affected (0.00 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> update assign8
+    -> set data = 'session1'
+    -> where pk = 102;
+ERROR 1205 (HY000): Lock wait timeout exceeded; try restarting transaction
+mysql> update assign8
+    -> set data = 'session2'
+    -> where pk = 101;
+ERROR 1205 (HY000): Lock wait timeout exceeded; try restarting transaction
+mysql> \t
+mysql> \t
