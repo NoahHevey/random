@@ -1,0 +1,14 @@
+1	Chicago	Denver	919	
+John	Doe
+Michonne	Grimes
+Mary	Brown
+Dean	Winchester
+Daryl	Dixon
+John	Doe
+count6
+2	Chicago	Laredo	1361	
+Mary	Brown
+Sophia	Peletier
+count2
+4	Miami	Denver	2060	
+Merle	Dixon
