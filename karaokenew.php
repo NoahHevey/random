@@ -14,22 +14,22 @@
     border: 1px solid #dddddd;
     text-align: left;
     padding: 8px;
-    } 
-    
+    }
+
     #t01 {
         background-color: cadetblue;
         color: white;
     }
-    
+
      #t02 {
         background-color: crimson;
         color: white;
     }
-    
+
     tr:hover {background-color: #f5f5f5;}
-   
+
    .button {
-    background-color: #e7e7e7; 
+    background-color: #e7e7e7;
     color: black;
     padding: 5px;
     border: none;
@@ -59,21 +59,54 @@
 
 <table>
 	<tr>
-		<th> <a href="karaoke.php?order=<?php echo isset($_GET['order'])?!$_GET['order']:1; ?>&orderBy=songID">SongID:</a> </th>
-		<th> <a href="karaoke.php?order=<?php echo isset($_GET['order'])?!$_GET['order']:1; ?>&orderBy=song">Song:</a> </th>
-		<th> <a href="karaoke.php?order=<?php echo isset($_GET['order'])?!$_GET['order']:1; ?>&orderBy=length">Length:</a> </th>
-		<th> <a href="karaoke.php?order=<?php echo isset($_GET['order'])?!$_GET['order']:1; ?>&orderBy=artist">Artist:</a> </th>
-		<th> <a href="karaoke.php?order=<?php echo isset($_GET['order'])?!$_GET['order']:1; ?>&orderBy=album">Album:</a> </th>
+		<th> <a href="?sorting='.$sort.'&field=songID">SongID:</a> </th>
+		<th> <a href="?sorting='.$sort.'&field=song">Song:</a> </th>
+		<th> <a href="?sorting='.$sort.'&field=timeLength">Length:</a> </th>
+		<th> <a href="?sorting='.$sort.'&field=artistName">Artist:</a> </th>
+		<th> <a href="?sorting='.$sort.'&field=album">Album:</a> </th>
 	</tr>
 
 <?php
-	$isAsc = isset($_GET['order'])? (bool) $_GET['order']: 1;
-	$orderBy = array('song', 'length', 'artist', 'album');
+	$field = "songID";
+	$sort = "ASC";
+
+	if (isset($_GET['sorting']))
+	{
+		if ($_GET['sorting'] === "ASC")
+		{
+			$sort = "DESC";
+		}
+		else
+		{
+			$sort = "ASC";
+		}
+	}
+
+	if ($_GET['field'] === "songID")
+	{
+		$field = "song.songID";
+	}
+	else if ($_GET['field'] === "song")
+	{
+		$field = "song.songName";
+	}
+	else if ($_GET['field'] === "timeLength")
+	{
+		$field = "timeLength";
+	}
+	else if ($_GET['field'] === "artistName")
+	{
+		$field = "artistName";
+	}
+	else if ($_GET['field'] === "album")
+	{
+		$field = "album";
+	}
 
 
 	if (!isset($_POST['formSearch']))
 {
-	$sql = "SELECT song.songID, songName, timeLength, album, artistName FROM song, artist, plays WHERE artist.artistID = plays.artistID AND song.songID = plays.songID;";
+	$sql = "SELECT song.songID, songName, timeLength, album, artistName FROM song, artist, plays WHERE artist.artistID = plays.artistID AND song.songID = plays.songID ORDER BY $field $sort;";
 	$statement = $pdo->query($sql);
 
 	while ($row = $statement->fetch(PDO::FETCH_ASSOC))
