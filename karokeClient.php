@@ -1,3 +1,5 @@
+<?php require 'conn.php'; ?>
+
 <html>
 <head>
     <title>
@@ -38,29 +40,18 @@
     </style>
 </head>
 <body>
-<?php
-        $username = "z1754749"; // object to hold username
-        $password = "1995Nov28"; // object to hold password
-        try { // if something goes wrong, an exeption is thrown
-                $dsn = "mysql:host=courses;dbname=z1754749";      // creating dsn string
-                $pdo = new PDO($dsn, $username, $password);       // constructing an instance of the PDO class
-        }
-        catch(PDOexception $e) { // handle the exeption
-                echo "Connection to database failed: " . $e->getMessage();
-        }
-?>
-
 <table>
 	<tr>
-		<th> <a href="?sort=<?php echo isset($_GET['sort'])?!$_GET['sort']:1; ?>&field=songID">SongID:</a> </th>
 		<th> <a href="?sort=<?php echo isset($_GET['sort'])?!$_GET['sort']:1; ?>&field=song">Song:</a> </th>
 		<th> <a href="?sort=<?php echo isset($_GET['sort'])?!$_GET['sort']:1; ?>&field=timeLength">Length:</a> </th>
 		<th> <a href="?sort=<?php echo isset($_GET['sort'])?!$_GET['sort']:1; ?>&field=artistName">Artist:</a> </th>
 		<th> <a href="?sort=<?php echo isset($_GET['sort'])?!$_GET['sort']:1; ?>&field=album">Album:</a> </th>
+		<th> <a href="?sort=<?php echo isset($_GET['sort'])?!$_GET['sort']:1; ?>&field=style">Style:</a> </th>
+		<th> <a href="?sort=<?php echo isset($_GET['sort'])?!$_GET['sort']:1; ?>&field=karokeID">KarokeID:</a> </th>
 	</tr>
 
 <?php
-	$field = "songID";
+	$field = "karokeID";
 
 	$isAsc = isset($_GET['sort'])? (bool) $_GET['sort']: 1;
 
@@ -73,11 +64,7 @@
 		$order = "DESC";
 	}
 
-	if ($_GET['field'] === "songID")
-	{
-		$field = "song.songID";
-	}
-	else if ($_GET['field'] === "song")
+	 if ($_GET['field'] === "song")
 	{
 		$field = "song.songName";
 	}
@@ -93,23 +80,34 @@
 	{
 		$field = "album";
 	}
+	else if ($_GET['field'] === "style")
+	{
+		$field = "style";
+	}
+	else if ($_GET['field'] === "karokeID")
+	{
+		$field = "karokeID";
+	}
+
 	if (!isset($_POST['formSearch']))
 {
-	$sql = "SELECT song.songID, songName, timeLength, album, artistName FROM song, artist, plays WHERE artist.artistID = plays.artistID AND song.songID = plays.songID ORDER BY $field $order;";
+	$sql = "SELECT songName, timeLength, album, artistName, style, transforms.karokeID FROM song, artist, kfile, plays, transforms WHERE artist.artistID = plays.artistID AND song.songID = plays.songID AND song.songID = transforms.songID AND transforms.karokeID = kfile.karokeID ORDER BY $field $order;";
 	$statement = $pdo->query($sql);
 	while ($row = $statement->fetch(PDO::FETCH_ASSOC))
 	{
-		$songID = $row['songID'];
+		$karokeID = $row['karokeID'];
+		$style = $row['style'];
 		$songName = $row['songName'];
 		$timeLength = $row['timeLength'];
 		$album = $row['album'];
 		$artistName = $row['artistName'];
 		echo "<tr>
-			<td>$songID</td>
 			<td>$songName</td>
 			<td>$timeLength</td>
 			<td>$artistName</td>
 			<td>$album</td>
+			<td>$style</td>
+			<td>$karokeID</td>
 		      </tr>";
 	}
 	echo "</table>";
@@ -119,7 +117,7 @@
 		$search = $_POST['search'];
 		$value = $_POST['value'];
                 $value = '%'.$value.'%';
-		$query = "SELECT song.songID, songName, timeLength, album, artistName FROM song, artist, plays, contributor, performs_in WHERE artist.artistID = plays.artistID AND song.songID = plays.songID AND song.songID = performs_in.songID AND contributor.contributerID = performs_in.contributorID";
+		$query = "SELECT songName, timeLength, album, artistName, style, transforms.karokeID FROM song, artist, kfile, transforms, plays, contributor, performs_in WHERE artist.artistID = plays.artistID AND song.songID = plays.songID AND song.songID = performs_in.songID AND song.songID = transforms.songID AND transforms.karokeID = kfile.karokeID AND contributor.contributerID = performs_in.contributorID";
 		// artist
 		if ($search === "artist")
 		{
@@ -134,7 +132,6 @@
 			$statement = $pdo->prepare($query);
 			$statement->execute(array($value));
 		}
-		// DOESNT WORK
 		// contributor
 		if ($search === "contributor")
 		{
@@ -147,17 +144,19 @@
 		}
 		while ($row = $statement->fetch(PDO::FETCH_ASSOC))
         	{
-			$songID = $row['songID'];
+			$style = $row['style'];
+			$karokeID = $row['karokeID'];
                 	$songName = $row['songName'];
                 	$timeLength = $row['timeLength'];
                 	$album = $row['album'];
                 	$artistName = $row['artistName'];
                 	echo "<tr>
-				<td>$songID</td>
                         	<td>$songName</td>
                         	<td>$timeLength</td>
                         	<td>$artistName</td>
                         	<td>$album</td>
+				<td>$style</td>
+				<td>$karokeID</td>
                       	</tr>";
         	}
 		echo "</table>";
@@ -176,9 +175,9 @@
 		<input type = "submit" name = "formSearch" value = "Search" />
 	</p>
 
-	<p>To select a song, enter user ID and songID, and select a payment option: <br/>
+	<p>To select a song, enter user ID and karoke ID, and select a payment option: <br/>
 		UserID:    <input type = "text" name = "selectUser" /> <br/>
-		SongID: <input type = "text" name = "selectSong" /> <br/>
+		KarokeID:  <input type = "text" name = "selectSong" /> <br/>
 		Payment:   <select name = "payment">
 				<option value = "0">Free</option>
 				<option value = "1">$1.00</option>
